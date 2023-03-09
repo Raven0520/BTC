@@ -1,0 +1,31 @@
+# node config
+
+[node]
+
+[node.local]
+  host  = "http://127.0.0.1"
+  port  = 8332
+  user  = "raven"
+  pass  = "NP6uDLgPxFmgIZ7ocZVb"
+  debug = false
+
+[node.main_net]
+  host  = "http://127.0.0.1"
+  port  = 8332
+  user  = "raven"
+  pass  = "NP6uDLgPxFmgIZ7ocZVb"
+  debug = false
+
+[node.test_net]
+  host  = "http://127.0.0.1"
+  port  = 18332
+  user  = "raven"
+  pass  = "NP6uDLgPxFmgIZ7ocZVb"
+  debug = false
+
+[node.regtest]
+  host  = "http://127.0.0.1"
+  port  = 8332
+  user  = "raven"
+  pass  = "NP6uDLgPxFmgIZ7ocZVb"
+  debug = false

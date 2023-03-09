@@ -1,0 +1,22 @@
+# config
+
+# base settings
+[base]
+  env           = "Local"
+  net           = "test_net"
+  debug_mode    = "debug"
+  time_location = "Asia/Shanghai"
+
+# file path
+[path]
+  pid = "bitcoin.pid"
+
+[consul]
+  env  = "Local"
+  host = "localhost"
+  port = 8500
+
+[grpc]
+  name = "BTC"        # GRPC Service Name
+  host = "consul.loc" # Listen address default "consul.loc"
+  port = 24000        # Listen port default ":8700"

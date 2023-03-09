@@ -1,0 +1,12 @@
+# Ignore editor configuration
+.idea
+.vscode
+
+# Ignore local workspace
+*.pid
+go.work
+go.work.sum
+
+# Ignore compiled directory
+/build
+
