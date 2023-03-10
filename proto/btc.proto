@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./proto;proto";
+
+// NewSegwitPost Generate segwit address from random wordlist
+message NewSegwitPost {
+  uint64 ChainID  = 1 [json_name = "chain_id"];
+}
+
+// MnemonicPost Input Mnemonic
+message MnemonicPost{
+  uint64 ChainID  = 1 [json_name = "chain_id"];
+  string Mnemonic = 2 [json_name = "mnemonic"];
+  string Pass     = 3 [json_name = "pass"];
+  uint32 Account  = 4 [json_name = "account"];
+  bool   External = 5 [json_name = "external"];
+  uint32 Address  = 6 [json_name = "address"];
+}
+
+// SeedPost Input Seed & Path
+message SeedPost{
+  uint64 ChainID  = 1 [json_name = "chain_id"];
+  string Seed     = 2 [json_name = "seed"];
+  uint32 Account  = 3 [json_name = "account"];
+  bool   External = 4 [json_name = "external"];
+  uint32 Address  = 5 [json_name = "address"];
+}
+
+// MultiSigPost input required & pubk list
+message MultiSigPost {
+  uint64   ChainID            = 1 [json_name = "chain_id"];
+  uint64   required           = 2 [json_name = "required"];
+  repeated string public_keys = 3 [json_name = "public_keys"];
+}
+
+// Segwit Segwit Address Struct
+message Segwit {
+  string Address = 1 [json_name = "address"];
+  string Private = 2 [json_name = "private"];
+  string Public  = 3 [json_name = "public"];
+}
+
+// SegwitResponse Return Generate private key | public key | address
+message SegwitResponse {
+  string Message = 1 [json_name = "message"];
+  Segwit Data    = 2 [json_name = "data"];
+}
+
+// MultiSig MultiSig Address Struct
+message MultiSig {
+  string Address = 1 [json_name = "address"];
+  string Script  = 2 [json_name = "script"];
+}
+
+// MultiSigResponse return MultiSig address
+message MultiSigResponse {
+  string   Message = 1 [json_name = "message"];
+  MultiSig Data    = 2 [json_name = "data"];
+}
+
+// BTCService GRPC Service
+service BTCService {
+  rpc NewSegwit (NewSegwitPost) returns (SegwitResponse) {}
+  rpc SegwitFromMnemonic (MnemonicPost) returns (SegwitResponse) {}
+  rpc SegwitFromSeed (SeedPost) returns (SegwitResponse) {}
+  rpc MultiSig (MultiSigPost) returns (MultiSigResponse) {}
+}

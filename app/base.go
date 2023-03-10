@@ -17,7 +17,6 @@ type BaseConfig struct {
 // BaseConfig Base Configture
 type Base struct {
 	Env          string `mapstructure:"env"`
-	Net          string `mapstructure:"net"`
 	DebugMode    string `mapstructure:"debug_mode"`
 	TimeLocation string `mapstructure:"time_location"`
 }
@@ -64,7 +63,7 @@ func InitBaseConfig(path string) error {
 
 // GetEnv Get Env
 func GetEnv() string {
-	Env := "Dev" // 默认环境
+	Env := "Dev" // Default Environment
 	if BaseConf.Base.Env != "" {
 		return BaseConf.Base.Env
 	}

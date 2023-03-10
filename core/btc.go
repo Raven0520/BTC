@@ -17,7 +17,7 @@ const symbol = "BTC"
 // BTC key derivation service
 type BTC struct {
 	CoinInfo
-	useSegWit bool //是否使用隔离见证地址
+	useSegWit bool // If use Hierarchical Deterministic (HD) Segregated Witness bitcoin address
 }
 
 // New Factory of BTC key derivation service

@@ -372,10 +372,6 @@ github.com/prometheus/procfs v0.0.2/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsT
 github.com/prometheus/procfs v0.0.8/go.mod h1:7Qr8sr6344vo1JqZ6HhLceV9o3AJ1Ff+GxbHq6oeK9A=
 github.com/prometheus/procfs v0.9.0 h1:wzCHvIvM5SxWqYvwgVL7yJY8Lz3PKn49KQtpgMYJfhI=
 github.com/prometheus/tsdb v0.7.1 h1:YZcsG11NqnK4czYLrWd9mpEuAJIHVQLwdrleYfszMAA=
-github.com/raven0520/proto v0.1.1 h1:bT0bU0dRIPYheF2LHY3SRy1y0Dzd3BAXrisS/sTZYP8=
-github.com/raven0520/proto v0.1.1/go.mod h1:PHVZTw2ULScxhEsKUyw74kf5FO6dSilwI6cB6jR20iA=
-github.com/raven0520/proto v0.1.2 h1:jlZu1mmz5TnJ+XBe0U1oWLsmMb9zq1HKbLdqB4wtn3c=
-github.com/raven0520/proto v0.1.2/go.mod h1:PHVZTw2ULScxhEsKUyw74kf5FO6dSilwI6cB6jR20iA=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.9.0 h1:73kH8U+JUqXU8lRuOHeVHaa/SZPifC7BkcraZVejAe8=
 github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=

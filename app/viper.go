@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var ViperConfMap map[string]*viper.Viper // Configture Map
+
 // IgnoreFileList File names that do not need to be parsed
 var IgnoreFileList = []string{
 	".DS_Store",

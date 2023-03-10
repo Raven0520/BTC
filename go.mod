@@ -12,11 +12,11 @@ require (
 	github.com/hashicorp/consul/api v1.18.0
 	github.com/json-iterator/go v1.1.12
 	github.com/pkg/errors v0.9.1
-	github.com/raven0520/proto v0.1.2
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/crypto v0.7.0
 	google.golang.org/grpc v1.53.0
+	google.golang.org/protobuf v1.28.1
 )
 
 require github.com/btcsuite/btclog v0.0.0-20170628155309-84c8d2346e9f // indirect
@@ -59,7 +59,6 @@ require (
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

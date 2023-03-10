@@ -6,22 +6,20 @@ import (
 
 	"github.com/btcsuite/btcd/btcjson"
 	"github.com/pkg/errors"
-	"github.com/raven0520/btc/app"
 	"github.com/raven0520/btc/bip39"
 	"github.com/raven0520/btc/bip44"
 	"github.com/raven0520/btc/core"
 	"github.com/raven0520/btc/format"
-	"github.com/raven0520/proto/btc"
+	"github.com/raven0520/btc/proto"
 )
 
 // NewSegwit Generate Segwit From Random Mnemonic
-func NewSegwit() (response *btc.SegwitResponse, err error) {
+func NewSegwit(post *proto.NewSegwitPost) (response *proto.SegwitResponse, err error) {
 	var (
 		entropy, seed []byte
 		mnemonic      string
 		deriver       bip44.Deriver
 	)
-	chainID := ChainNet[app.BaseConf.Base.Net]
 	err = bip39.SetWordListLang(bip39.LangEnglish)
 	if err != nil {
 		return
@@ -35,14 +33,14 @@ func NewSegwit() (response *btc.SegwitResponse, err error) {
 	if seed, err = bip39.NewSeedWithErrorChecking(mnemonic, ""); err != nil {
 		return
 	}
-	if deriver, err = core.NewBip44Deriver(bip44.FullPathFormat, true, seed, chainID); err != nil {
+	if deriver, err = core.NewBip44Deriver(bip44.FullPathFormat, true, seed, int(post.ChainID)); err != nil {
 		return
 	}
 	return format.SegwitResponse(deriver)
 }
 
 // GenerateSegwit Generate Segwit From Post Mnemonic
-func GenerateSegwit(post *btc.MnemonicPost) (response *btc.SegwitResponse, err error) {
+func GenerateSegwit(post *proto.MnemonicPost) (response *proto.SegwitResponse, err error) {
 	var (
 		external = 0
 		seed     []byte
@@ -52,25 +50,23 @@ func GenerateSegwit(post *btc.MnemonicPost) (response *btc.SegwitResponse, err e
 	if !post.External {
 		external = 1
 	}
-	chainID := ChainNet[app.BaseConf.Base.Net]
 	if seed, err = bip39.NewSeedWithErrorChecking(post.Mnemonic, post.Pass); err != nil {
 		return
 	}
 	pathf = fmt.Sprintf("m/44'/%s'/%d'/%d/%d", "%d", post.Account, external, post.Address)
-	if deriver, err = core.NewBip44Deriver(pathf, true, seed, chainID); err != nil {
+	if deriver, err = core.NewBip44Deriver(pathf, true, seed, int(post.ChainID)); err != nil {
 		return
 	}
 	return format.SegwitResponse(deriver)
 }
 
 // GenerateSegwit Generate Segwit From Seed & Path
-func GenerateSegwitFromSeed(post *btc.SeedPost) (response *btc.SegwitResponse, err error) {
+func GenerateSegwitFromSeed(post *proto.SeedPost) (response *proto.SegwitResponse, err error) {
 	var (
 		external = 0
 		pathf    string
 		deriver  bip44.Deriver
 	)
-	chainID := ChainNet[app.BaseConf.Base.Net]
 	seed, err := hex.DecodeString(post.Seed)
 	if err != nil {
 		return
@@ -79,7 +75,7 @@ func GenerateSegwitFromSeed(post *btc.SeedPost) (response *btc.SegwitResponse, e
 		external = 1
 	}
 	pathf = fmt.Sprintf("m/44'/%s'/%d'/%d/%d", "%d", post.Account, external, post.Address)
-	if deriver, err = core.NewBip44Deriver(pathf, true, seed, chainID); err != nil {
+	if deriver, err = core.NewBip44Deriver(pathf, true, seed, int(post.ChainID)); err != nil {
 		return
 	}
 	return format.SegwitResponse(deriver)
@@ -95,7 +91,7 @@ func GenerateSegwitFromSeed(post *btc.SeedPost) (response *btc.SegwitResponse, e
 //	Address, RedeemScript
 
 // NewMultiSigAddress Generate MultiSigAddress
-func NewMultiSigAddress(post *btc.MultiSigPost) (address, script string, err error) {
+func NewMultiSigAddress(post *proto.MultiSigPost) (address, script string, err error) {
 	chainParams, err := core.ChainFlag2ChainParams(int(post.ChainID))
 	if err != nil {
 		return

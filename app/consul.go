@@ -6,8 +6,8 @@ import (
 	"time"
 
 	consul "github.com/hashicorp/consul/api"
+	"github.com/raven0520/btc/proto"
 	"github.com/raven0520/btc/util"
-	"github.com/raven0520/proto/btc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -57,10 +57,10 @@ func Connect(tag string) (*grpc.ClientConn, error) {
 }
 
 // GetBTC Return BTC Service
-func GetBTC() (btc.BTCServiceClient, *grpc.ClientConn, error) {
+func GetBTC() (proto.BTCServiceClient, *grpc.ClientConn, error) {
 	Connect, err := Connect("BTC")
 	if err != nil {
 		return nil, nil, err
 	}
-	return btc.NewBTCServiceClient(Connect), Connect, nil
+	return proto.NewBTCServiceClient(Connect), Connect, nil
 }

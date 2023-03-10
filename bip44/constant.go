@@ -1,14 +1,3 @@
-/*
-SLIP-0044 : Registered coin types for BIP-0044
-Number:  SLIP-0044
-Title:   Registered coin types for BIP-0044
-Type:    Standard
-Status:  Draft
-Authors: Pavol Rusnak <stick@satoshilabs.com>
-         Marek Palatinus <slush@satoshilabs.com>
-Created: 2014-07-09
-*/
-
 package bip44
 
 import (

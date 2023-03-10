@@ -3,7 +3,6 @@
 # base settings
 [base]
   env           = "Local"
-  net           = "test_net"
   debug_mode    = "debug"
   time_location = "Asia/Shanghai"
 

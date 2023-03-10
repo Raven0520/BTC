@@ -8,8 +8,8 @@ import (
 
 	consul "github.com/hashicorp/consul/api"
 	"github.com/raven0520/btc/app"
+	"github.com/raven0520/btc/proto"
 	"github.com/raven0520/btc/service"
-	"github.com/raven0520/proto/btc"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -133,7 +133,7 @@ func (g *GrpcServer) GrpcServerStart() {
 	var server = new(service.BtcService)
 	var options []grpc.ServerOption
 	s := grpc.NewServer(options...)
-	btc.RegisterBTCServiceServer(s, server)               // register service
+	proto.RegisterBTCServiceServer(s, server)             // register service
 	reflection.Register(s)                                // register
 	grpc_health_v1.RegisterHealthServer(s, &HealthImpl{}) // register health server
 	grace, err := app.NewGraceGrpc(s, "tcp", ":"+strconv.Itoa(g.Port), app.BaseConf.Path.Pid)

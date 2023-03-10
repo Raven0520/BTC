@@ -1,34 +1,24 @@
 package logic
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/agiledragon/gomonkey"
 	"github.com/pkg/errors"
-	"github.com/raven0520/btc/app"
 	"github.com/raven0520/btc/bip39"
+	"github.com/raven0520/btc/proto"
 	"github.com/raven0520/btc/util"
-	"github.com/raven0520/proto/btc"
 	"github.com/stretchr/testify/assert"
 )
 
-var env = "../config/test/"
-
-func init() {
-	err := app.InitModule(env, []string{"base"})
-	if err != nil {
-		fmt.Printf("Failed Init %s", err) // 输出错误信息到控制台
-	}
-}
-
 func TestNewSegwit(t *testing.T) {
+	post := &proto.NewSegwitPost{ChainID: 2}
 	// Error Wordlist
 	wordlist := gomonkey.ApplyFunc(bip39.SetWordListLang, func(lang int) error {
 		return errors.Errorf("expected lang [%d - %d], got: %d", bip39.LangChineseSimplified, bip39.LangSpanish, 9)
 	})
-	response, err := NewSegwit()
+	response, err := NewSegwit(post)
 	assert.Nil(t, response)
 	assert.EqualError(t, err, "expected lang [0 - 7], got: 9")
 	wordlist.Reset()
@@ -37,22 +27,23 @@ func TestNewSegwit(t *testing.T) {
 		return "exit fruit duty weekend romance upper human before nuclear rabbit slim frame", nil
 	})
 	defer monkey.Reset()
-	external := &btc.SegwitResponse{
+	external := &proto.SegwitResponse{
 		Message: util.RequestOK,
-		Data: &btc.Segwit{
+		Data: &proto.Segwit{
 			Address: "2N7iuhPBAdD4Zyhj7ZjACY7uJWmaZgBu5ZX",
 			Private: "cW3yMs74DrwsFyyWpnubVJXPo7ptrFT7hi6rE92gHDGtbSrXBbpc",
 			Public:  "03ff5fa11a73a5b0147fdd8c837ca00665f568de083ee0c8f2d0518bcfb1970e2e",
 		},
 	}
-	response, err = NewSegwit()
+	response, err = NewSegwit(post)
 	assert.NoError(t, err)
 	assert.EqualValues(t, external, response)
 }
 
 func TestGenerateSegwit(t *testing.T) {
 	// path "m/49'/1'/0'/0/0"
-	post := &btc.MnemonicPost{
+	post := &proto.MnemonicPost{
+		ChainID:  2,
 		Mnemonic: "exit fruit duty weekend romance upper human before nuclear rabbit slim frame",
 		Pass:     "",
 		Account:  0,
@@ -60,9 +51,9 @@ func TestGenerateSegwit(t *testing.T) {
 		Address:  0,
 	}
 	t.Run("external", func(t *testing.T) {
-		external := &btc.SegwitResponse{
+		external := &proto.SegwitResponse{
 			Message: util.RequestOK,
-			Data: &btc.Segwit{
+			Data: &proto.Segwit{
 				Address: "2N7iuhPBAdD4Zyhj7ZjACY7uJWmaZgBu5ZX",
 				Private: "cW3yMs74DrwsFyyWpnubVJXPo7ptrFT7hi6rE92gHDGtbSrXBbpc",
 				Public:  "03ff5fa11a73a5b0147fdd8c837ca00665f568de083ee0c8f2d0518bcfb1970e2e",
@@ -75,9 +66,9 @@ func TestGenerateSegwit(t *testing.T) {
 	// path "m/49'/1'/0'/1/0"
 	t.Run("change", func(t *testing.T) {
 		post.External = false
-		change := &btc.SegwitResponse{
+		change := &proto.SegwitResponse{
 			Message: util.RequestOK,
-			Data: &btc.Segwit{
+			Data: &proto.Segwit{
 				Address: "2N34mTbwU6PwyhtGFQy8iML9fq9C3qgCVDE",
 				Private: "cPppReeEVsy9V6TPyXDUjERFMupHqeEcCF1EQJFNrbkjQ62vues9",
 				Public:  "039b51299768241c89ae9958eeabcb27f11ababbfa33c240f2495ef11b7ce0acda",
@@ -91,27 +82,28 @@ func TestGenerateSegwit(t *testing.T) {
 
 func TestGenerateSegwitFromSeed(t *testing.T) {
 	type args struct {
-		post *btc.SeedPost
+		post *proto.SeedPost
 	}
 	tests := []struct {
 		name         string
 		args         args
-		wantResponse *btc.SegwitResponse
+		wantResponse *proto.SegwitResponse
 		wantErr      bool
 	}{
 		{
 			name: "External",
 			args: args{
-				post: &btc.SeedPost{
+				post: &proto.SeedPost{
+					ChainID:  2,
 					Seed:     "a1b70d538307815c03ac6ba0668564257871e4ec68ab1412d09d5f4d34a9ee73ea770681684cb60973c17761347b52d2336e539310154dd75ec0f0e9a7ab4b3f",
 					Account:  0,
 					External: true,
 					Address:  0,
 				},
 			},
-			wantResponse: &btc.SegwitResponse{
+			wantResponse: &proto.SegwitResponse{
 				Message: util.RequestOK,
-				Data: &btc.Segwit{
+				Data: &proto.Segwit{
 					Address: "2N7iuhPBAdD4Zyhj7ZjACY7uJWmaZgBu5ZX",
 					Private: "cW3yMs74DrwsFyyWpnubVJXPo7ptrFT7hi6rE92gHDGtbSrXBbpc",
 					Public:  "03ff5fa11a73a5b0147fdd8c837ca00665f568de083ee0c8f2d0518bcfb1970e2e",
@@ -122,16 +114,17 @@ func TestGenerateSegwitFromSeed(t *testing.T) {
 		{
 			name: "Change",
 			args: args{
-				post: &btc.SeedPost{
+				post: &proto.SeedPost{
+					ChainID:  2,
 					Seed:     "a1b70d538307815c03ac6ba0668564257871e4ec68ab1412d09d5f4d34a9ee73ea770681684cb60973c17761347b52d2336e539310154dd75ec0f0e9a7ab4b3f",
 					Account:  0,
 					External: false,
 					Address:  0,
 				},
 			},
-			wantResponse: &btc.SegwitResponse{
+			wantResponse: &proto.SegwitResponse{
 				Message: util.RequestOK,
-				Data: &btc.Segwit{
+				Data: &proto.Segwit{
 					Address: "2N34mTbwU6PwyhtGFQy8iML9fq9C3qgCVDE",
 					Private: "cPppReeEVsy9V6TPyXDUjERFMupHqeEcCF1EQJFNrbkjQ62vues9",
 					Public:  "039b51299768241c89ae9958eeabcb27f11ababbfa33c240f2495ef11b7ce0acda",
@@ -156,7 +149,7 @@ func TestGenerateSegwitFromSeed(t *testing.T) {
 
 func TestNewMultiSigAddress(t *testing.T) {
 	type args struct {
-		post *btc.MultiSigPost
+		post *proto.MultiSigPost
 	}
 	tests := []struct {
 		name        string
@@ -167,21 +160,21 @@ func TestNewMultiSigAddress(t *testing.T) {
 	}{
 		{
 			name:        "Get Chain Params Error",
-			args:        args{post: &btc.MultiSigPost{ChainID: 4, Required: 0, PublicKeys: []string{}}},
+			args:        args{post: &proto.MultiSigPost{ChainID: 4, Required: 0, PublicKeys: []string{}}},
 			wantAddress: "",
 			wantScript:  "",
 			wantErr:     true,
 		},
 		{
 			name:        "Need more public key",
-			args:        args{post: &btc.MultiSigPost{ChainID: 2, Required: 2, PublicKeys: []string{"039b51299768241c89ae9958eeabcb27f11ababbfa33c240f2495ef11b7ce0acda"}}},
+			args:        args{post: &proto.MultiSigPost{ChainID: 2, Required: 2, PublicKeys: []string{"039b51299768241c89ae9958eeabcb27f11ababbfa33c240f2495ef11b7ce0acda"}}},
 			wantAddress: "",
 			wantScript:  "",
 			wantErr:     true,
 		},
 		{
 			name:        "Success",
-			args:        args{post: &btc.MultiSigPost{ChainID: 2, Required: 2, PublicKeys: []string{"039b51299768241c89ae9958eeabcb27f11ababbfa33c240f2495ef11b7ce0acda", "03ff5fa11a73a5b0147fdd8c837ca00665f568de083ee0c8f2d0518bcfb1970e2e"}}},
+			args:        args{post: &proto.MultiSigPost{ChainID: 2, Required: 2, PublicKeys: []string{"039b51299768241c89ae9958eeabcb27f11ababbfa33c240f2495ef11b7ce0acda", "03ff5fa11a73a5b0147fdd8c837ca00665f568de083ee0c8f2d0518bcfb1970e2e"}}},
 			wantAddress: "2N5tLUpDaPC5bh1dXGHrLvhXKCtVyF2ppXV",
 			wantScript:  "5221039b51299768241c89ae9958eeabcb27f11ababbfa33c240f2495ef11b7ce0acda2103ff5fa11a73a5b0147fdd8c837ca00665f568de083ee0c8f2d0518bcfb1970e2e52ae",
 			wantErr:     false,
